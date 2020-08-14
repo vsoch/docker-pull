@@ -15,7 +15,7 @@ vanessa/nu-plugin-len
 vanessa/fastq.bio
 vanessa/sregistry_nginx
 vanessa/watchme
-vanessa/slurm
+vanessa/slurm:18.08.6
 vanessa/expfactory
 vanessa/expfactory-builder
 vanessa/scif

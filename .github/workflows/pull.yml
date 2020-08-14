@@ -1,6 +1,7 @@
 name: deploy
 
 on:
+  pull_request: []
   push:
     branches:
       - master
@@ -12,7 +13,17 @@ jobs:
       - uses: actions/checkout@v2
       - name: Pull images
         run: |
+          lastrepo=""
+          lastseen=""
           for image in $(cat repos.txt); do
-              printf "Pulling $image\n";
-              docker pull "${image}"
+             # Parse repository name, we will remove the previous image if different
+             readarray -d : -t repository <<< "$image"
+             if [ "${lastseen}" != "" ] && [ "${repository[0]}" != "${lastseen}" ]; then
+                 printf "Removing image ${lastseen} to make room."
+                 docker rmi "${lastrepo}" || docker rmi "${lastseen}"
+             fi
+             lastrepo="${repository[0]}"
+             lastseen="${image}"
+             printf "Pulling $image\n";
+             docker pull "${image}"
           done
